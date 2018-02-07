@@ -7,9 +7,9 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 #
 
-CXX = c++
-CXXFLAGS = -pthread -std=c++0x -march=native
-OBJS = args.o dictionary.o productquantizer.o matrix.o qmatrix.o vector.o model.o utils.o fasttext.o
+CXX = clang++
+CXXFLAGS = -pthread -std=c++11 -march=native -stdlib=libc++ 
+OBJS = args.o dictionary.o productquantizer.o matrix.o qmatrix.o vector.o model.o utils.o fasttext.o main.o
 INCLUDES = -I.
 
 opt: CXXFLAGS += -O3 -funroll-loops
@@ -45,8 +45,11 @@ utils.o: src/utils.cc src/utils.h
 fasttext.o: src/fasttext.cc src/*.h
 	$(CXX) $(CXXFLAGS) -c src/fasttext.cc
 
-fasttext: $(OBJS) src/fasttext.cc
-	$(CXX) $(CXXFLAGS) $(OBJS) src/main.cc -o fasttext
+main.o: src/main.cc src/*.h
+	$(CXX) $(CXXFLAGS) -c src/main.cc
+
+fasttext: $(OBJS)
+	$(CXX) $(OBJS) -lc++ -o fasttext
 
 clean:
 	rm -rf *.o fasttext
